@@ -349,7 +349,9 @@ module.exports = {
             exclude: cssModuleRegex,
             loader: getStyleLoaders({
               importLoaders: 1,
+              modules: true,
               sourceMap: shouldUseSourceMap,
+              localIdentName: '[name]__[local]__[hash:base64:5]'
             }),
             // Don't consider CSS imports dead code even if the
             // containing package claims to have no side effects.
@@ -365,8 +367,7 @@ module.exports = {
               importLoaders: 1,
               sourceMap: shouldUseSourceMap,
               modules: true,
-              getLocalIdent: getCSSModuleLocalIdent,
-              localIdentName: '[name]__[local]__[hash:base64:5]'
+              getLocalIdent: getCSSModuleLocalIdent
             }),
           },
           // Opt-in support for SASS. The logic here is somewhat similar
