@@ -88,7 +88,7 @@ export default class BurgerBuilder extends Component {
 		return (
 			<Aux>
 				<Modal show={this.state.checkout} modalClosed={this.cancelCheckout}>
-					<OrderSummary ingredients={this.state.ingredients} />
+					<OrderSummary ingredients={this.state.ingredients} cancelClicked={this.cancelCheckout} />
 				</Modal>
 				<Burger ingredients={this.state.ingredients} />
 				<BuildControls 
