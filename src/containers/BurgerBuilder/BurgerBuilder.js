@@ -74,9 +74,22 @@ export default class BurgerBuilder extends Component {
 		this.setState({checkout: true});
 	}
 
-	//Cancel OrderSummary by clicking outside the Modal
-	cancelCheckout = () => {
+	//Cancel OrderSummary by clicking outside the Modal or the Cancel button
+	cancelCheckoutHandler = () => {
 		this.setState({checkout: false});
+	}
+
+	//Continue with checkout by clicking the continue button
+	continueCheckoutHandler = () => {
+		alert('You Continue!');
+	}
+
+	resetIngredients = () =>{
+		const updatedIngredients = {...this.state.ingredients};
+		for (let ing in updatedIngredients){
+			updatedIngredients[ing] = 0;
+		}
+		this.setState({totalPrice: 4, ingredients: updatedIngredients, purchasable: false});
 	}
 
 	render() {
@@ -87,8 +100,12 @@ export default class BurgerBuilder extends Component {
 
 		return (
 			<Aux>
-				<Modal show={this.state.checkout} modalClosed={this.cancelCheckout}>
-					<OrderSummary ingredients={this.state.ingredients} cancelClicked={this.cancelCheckout} />
+				<Modal show={this.state.checkout} modalClosed={this.cancelCheckoutHandler}>
+					<OrderSummary 
+						ingredients={this.state.ingredients} 
+						cancelClicked={this.cancelCheckoutHandler} 
+						continueClicked={this.continueCheckoutHandler}
+						price={this.state.totalPrice}/>
 				</Modal>
 				<Burger ingredients={this.state.ingredients} />
 				<BuildControls 
@@ -98,6 +115,7 @@ export default class BurgerBuilder extends Component {
 					disabled={disabledInfo}
 					purchasable={this.state.purchasable}
 					ordered={this.updateCheckout}
+					resetIng={this.resetIngredients}
 				/>
 			</Aux>
 		);
