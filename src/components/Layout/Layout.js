@@ -8,22 +8,23 @@ import SideDrawer from '../UI/Navigation/SideDrawer/SideDrawer';
 export default class Layout extends Component {
 
 	state = {
-		showSideDrawer: true
+		showSideDrawer: false
 	}
 
 	sideDrawerCloseHandler = () => {
 		this.setState({showSideDrawer: false});
 	}
 
-	sideDrawerSwitchHandler = () => {
-		const show = this.state.showSideDrawer;
-		this.setState({showSideDrawer: !show});
+	sideDrawerToggleHandler = () => {
+		this.setState((prevState) => {
+			return	{showSideDrawer: !prevState.showSideDrawer};
+		});
 	}
 
 	render() {
 		return(
 			<Aux>
-				<Toolbar menuClicked={this.sideDrawerSwitchHandler}/> 
+				<Toolbar menuClicked={this.sideDrawerToggleHandler}/> 
 				<SideDrawer open={this.state.showSideDrawer} closed={this.sideDrawerCloseHandler}/>
 				<main className={classes.Content}>
 					{this.props.children}
