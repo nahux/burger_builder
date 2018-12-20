@@ -1,31 +1,35 @@
-import React  from 'react';
-import Aux from '../../../hoc/Auxiliary';
+import React, { Component }  from 'react';
+import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import Button from '../../UI/Button/Button';
 
-const orderSummary = (props) => {
+export default class OrderSummary extends Component {
 
-	const ingredientsSummary = 
-		Object.keys(props.ingredients)
-			.map(igKey => {
-				return (
-					<li key={igKey}>
-						<span style={{textTransform: 'capitalize'}}>{igKey}</span> : {props.ingredients[igKey]} 
-					</li>
-				);
-			});
+	//This should be a functional component
 
-	return (
-		<Aux>
-			<h3>Your order</h3>
-			<p>A burger with the following ingredients:</p>
-			<ul>
-				{ingredientsSummary}
-			</ul>
-			<p>Total Price: <strong>$ {props.price.toFixed(2)}</strong></p>
-			<p>Continue to checkout?</p>
-			<Button btnType={'Danger'} clicked={props.cancelClicked}>CANCEL</Button>
-			<Button btnType={'Success'} clicked={props.continueClicked}>CONTINUE</Button>
-		</Aux>
-	);
-};
-export default orderSummary;
+	render(){
+
+		const ingredientsSummary = 
+			Object.keys(this.props.ingredients)
+				.map(igKey => {
+					return (
+						<li key={igKey}>
+							<span style={{textTransform: 'capitalize'}}>{igKey}</span> : {this.props.ingredients[igKey]} 
+						</li>
+					);
+				});
+
+		return (
+			<Aux>
+				<h3>Your order</h3>
+				<p>A burger with the following ingredients:</p>
+				<ul>
+					{ingredientsSummary}
+				</ul>
+				<p>Total Price: <strong>$ {this.props.price.toFixed(2)}</strong></p>
+				<p>Continue to checkout?</p>
+				<Button btnType={'Danger'} clicked={this.props.cancelClicked}>CANCEL</Button>
+				<Button btnType={'Success'} clicked={this.props.continueClicked}>CONTINUE</Button>
+			</Aux>
+		);
+	}
+}
