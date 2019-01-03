@@ -4,10 +4,10 @@ import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import Backdrop from '../Backdrop/Backdrop';
 
 export default class Modal extends Component {
-	
+
 	shouldComponentUpdate(nextProps, nextState){
 		//Only rerenders the modal if show has changed (if checkout changes)
-		return nextProps.show !== this.props.show;
+		return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
 	}
 
 	render() {
