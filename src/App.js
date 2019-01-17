@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
+
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 
@@ -10,8 +12,11 @@ class App extends Component {
     return (
       <div>
         <Layout>
-          <BurgerBuilder />
-          <Checkout />
+          <Switch>
+            <Route path="/" exact component={BurgerBuilder}/>
+            <Route path="/checkout" component={Checkout} />
+            <Route render={() => <h1 style={{textAlign:'center', margin:'auto'}}>Ooops page wasn't found</h1>} />
+          </Switch>
         </Layout>
       </div>
     );
