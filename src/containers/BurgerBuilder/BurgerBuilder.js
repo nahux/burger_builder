@@ -7,7 +7,6 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import {Redirect} from 'react-router-dom';
 
 
 const INGREDIENTS_PRICES = {
@@ -95,36 +94,11 @@ class BurgerBuilder extends Component {
 
 	//Continue with checkout by clicking the continue button
 	continueCheckoutHandler = () => {
-		// this.setState({loading: true});
-		// //Build the order object with dummy data
-		// const order = {
-		// 	ingredients: this.state.ingredients,
-		// 	price: this.state.totalPrice,
-		// 	customer: {
-		// 		name: 'Nahuel Aparicio',
-		// 		address: {
-		// 			street: 'street 1',
-		// 			zipCode: 'axsaf',
-		// 			country: 'Argentina'
-		// 		},
-		// 		email: 'napa@napa.com'
-		// 	},
-		// 	deliveryMethor: 'fastest'
-		// }
-
-		//For now I communicate with the firebase service and post the order
-		// axios.post('/orders.json', order)
-		// 	.then(response => {
-		// 		this.setState({loading:false, checkout:false});
-		// 	})
-		// 	.catch(error => {
-		// 		this.setState({loading:false, checkout:false});
-		// });
 		const queryParams = [];
-
 		for (let ing in this.state.ingredients) {
 			queryParams.push(encodeURIComponent(ing) + '=' + encodeURIComponent(this.state.ingredients[ing]));
 		}
+		queryParams.push('price='+this.state.totalPrice);
 		const queryString = queryParams.join('&');
 		this.props.history.push({
 			pathname:'/checkout',
