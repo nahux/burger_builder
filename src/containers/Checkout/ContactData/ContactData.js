@@ -15,7 +15,12 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
   		street: {
         elementType: 'input',
@@ -23,7 +28,12 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
   		zipCode: {
         elementType: 'input',
@@ -32,6 +42,13 @@ class ContactData extends React.Component {
           placeholder: 'Zip Code'
         },
         value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false,
+        touched: false
       },
   		country: {
         elementType: 'input',
@@ -40,6 +57,11 @@ class ContactData extends React.Component {
           placeholder: 'Country'
         },
         value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
   		email: {
         elementType: 'input',
@@ -48,6 +70,11 @@ class ContactData extends React.Component {
           placeholder: 'Your e-mail'
         },
         value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
 			deliveryMethod: {
         elementType: 'select',
@@ -57,19 +84,28 @@ class ContactData extends React.Component {
             {value:'cheapest', display:'Cheapest'}
           ]
         },
-        value: '',
-      },
+        value: 'fastest',
+        valid: true
+      }
     },
+    formIsValid: false,
     loading: false
   }
 
   orderHandler = (event) => {
+    //I don't want to set the request automatically so the page doesn't refresh
     event.preventDefault();
     this.setState({loading: true});
-		//Build the order object with dummy data
+    //Get the contact data from the form
+    const formData = {};
+    for(let formElementKey in this.state.orderForm){
+      formData[formElementKey] = this.state.orderForm[formElementKey].value;
+    }
+		//Build the order object
 		const order = {
 			ingredients: this.props.ingredients,
-			price: this.props.price
+			price: this.props.price,
+      orderData: formData
 		}
 
 		//For now I communicate with the firebase service and post the order
@@ -81,6 +117,22 @@ class ContactData extends React.Component {
 			.catch(error => {
 				this.setState({loading:false});
 		});
+  }
+
+  checkValidity(value, rules) {
+    let isValid = true;
+    if(rules){
+      if(rules.required){
+        isValid = value.trim() !== '' && isValid;
+      }
+      if(rules.minLength){
+        isValid = value.length >= rules.minLength && isValid;
+      }
+      if(rules.maxLength){
+        isValid = value.length <= rules.maxLength && isValid;
+      }
+    }
+    return isValid;
   }
 
   changedHandler = (event, inputIdentifier) => {
@@ -95,8 +147,21 @@ class ContactData extends React.Component {
     }
     //We update the value with the event and set the state
     updatedFormElement.value = event.target.value;
+    //Check the validity of the element if it was changed
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+    //Set touched to true
+    updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
-    this.setState({orderForm: updatedOrderForm});
+
+    //Check all the fields to see if the form is valid
+    let formIsValid = true;
+    for(let inputId in updatedOrderForm){
+      if(!updatedOrderForm[inputId].valid){
+        formIsValid = updatedOrderForm[inputId].valid;
+        break;
+      }
+    }
+    this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid});
   }
 
   render () {
@@ -113,16 +178,19 @@ class ContactData extends React.Component {
       form = <Spinner />
     }
     else {
-      form = (<form>
+      form = (<form onSubmit={this.orderHandler}>
                 <h4>Contact Data</h4>
                 {formElementsArray.map(formElement => (
                   <Input  key={formElement.id}
                           elementType={formElement.config.elementType}
                           elementConfig={formElement.config.elementConfig}
                           value={formElement.config.value}
-                          changed={(event) => this.changedHandler(event,formElement.id)}/>
+                          changed={(event) => this.changedHandler(event,formElement.id)}
+                          invalid={!formElement.config.valid}
+                          touched={formElement.config.touched}
+                          shouldValidate={formElement.config.validation}/>
                 ))}
-                <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
               </form>);
     }
     return(
